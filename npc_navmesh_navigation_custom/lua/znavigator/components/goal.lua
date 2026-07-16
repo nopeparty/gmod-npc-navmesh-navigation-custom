@@ -95,7 +95,28 @@ function Goal:Update()
         return
     end
 
-    self.Position = self.Entity:GetPos()
+    local pos = self.Entity:GetPos()
+
+    if self.Position
+    and self.Position:DistToSqr(pos) < 64 * 64 then
+        return
+    end
+
+    self.Position = pos
+
+    self.LastUpdate = CurTime()
+
+    self.Dirty = true
+
+    self:GetNavigator():Fire(
+
+        "GoalChanged",
+
+        pos,
+
+        self.NavArea
+
+    )
 
 end
 

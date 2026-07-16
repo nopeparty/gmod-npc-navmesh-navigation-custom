@@ -62,10 +62,10 @@ Include("znavigator/utils/navmesh.lua")
 -- Components
 --------------------------------------------------------------------
 
-print("[ZN] ai")
-Include("znavigator/components/ai.lua")
 print("[ZN] runtime")
 Include("znavigator/components/runtime.lua")
+print("[ZN] ai")
+Include("znavigator/components/ai.lua")
 print("[ZN] goal")
 Include("znavigator/components/goal.lua")
 print("[ZN] path")
@@ -145,6 +145,10 @@ function ZNavigator.AttachNPC(npc)
     nav:AddComponent(runtime)
 
     -- 아래는 그대로 둠
+
+	nav:AddComponent(
+    	ZNavigator.Components.AI:new(nav)
+	)
 
 
     nav:AddComponent(

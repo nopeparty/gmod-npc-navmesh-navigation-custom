@@ -62,6 +62,8 @@ Include("znavigator/utils/navmesh.lua")
 -- Components
 --------------------------------------------------------------------
 
+print("[ZN] ai")
+Include("znavigator/components/ai.lua")
 print("[ZN] runtime")
 Include("znavigator/components/runtime.lua")
 print("[ZN] goal")

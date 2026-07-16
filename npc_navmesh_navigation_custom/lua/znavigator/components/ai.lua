@@ -18,7 +18,7 @@ function AI:Initialize()
 
     self.Enemy = nil
 
-    self.LastGoalUpdate = 0
+    self.NextUpdate = 0
 
     self.UpdateInterval = 0.15
 
@@ -32,18 +32,17 @@ end
 
 function AI:Think()
 
+    if CurTime() < self.NextUpdate then
+        return
+    end
+
+    self.NextUpdate = CurTime() + self.UpdateInterval
+
     local npc = self:GetEntity()
 
     if not IsValid(npc) then
         return
     end
-
-    if CurTime() < self.LastGoalUpdate then
-        return
-    end
-
-    self.LastGoalUpdate =
-        CurTime() + self.UpdateInterval
 
     local goal = self:GetComponent("Goal")
 
@@ -51,11 +50,11 @@ function AI:Think()
         return
     end
 
-    ------------------------------------------------------
-    -- Enemy
-    ------------------------------------------------------
-
     local enemy = npc:GetEnemy()
+
+    ------------------------------------------------------
+    -- Lost Enemy
+    ------------------------------------------------------
 
     if not IsValid(enemy) then
 
@@ -63,7 +62,13 @@ function AI:Think()
 
             self.Enemy = nil
 
-            goal:Clear()
+            if goal.Clear then
+                goal:Clear()
+            end
+
+            self:GetNavigator():Fire(
+                "EnemyLost"
+            )
 
         end
 
@@ -72,7 +77,7 @@ function AI:Think()
     end
 
     ------------------------------------------------------
-    -- Enemy Changed
+    -- New Enemy
     ------------------------------------------------------
 
     if enemy ~= self.Enemy then
@@ -81,12 +86,20 @@ function AI:Think()
 
         goal:SetEntity(enemy)
 
+        self:GetNavigator():Fire(
+
+            "EnemyChanged",
+
+            enemy
+
+        )
+
         return
 
     end
 
     ------------------------------------------------------
-    -- Enemy Moved
+    -- Enemy moved
     ------------------------------------------------------
 
     local pos = enemy:GetPos()
@@ -99,8 +112,8 @@ function AI:Think()
 
     end
 
-    if goal.Position:DistToSqr(pos)
-        > self.RepathDistance * self.RepathDistance then
+    if goal.Position:DistToSqr(pos) >
+        self.RepathDistance * self.RepathDistance then
 
         goal:SetEntity(enemy)
 

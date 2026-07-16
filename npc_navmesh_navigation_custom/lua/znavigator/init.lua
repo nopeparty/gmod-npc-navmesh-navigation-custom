@@ -161,6 +161,10 @@ function ZNavigator.AttachNPC(npc)
         ZNavigator.Components.Path:new(nav)
     )
 
+	nav:AddComponent(
+		ZNavigator.Components.Navigation:new(nav)
+	)
+
     nav:AddComponent(
         ZNavigator.Components.Waypoint:new(nav)
     )
